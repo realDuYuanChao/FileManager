@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_camera"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="@string/home" />
+        <item
+            android:id="@+id/nav_music"
+            android:icon="@drawable/ic_library_music_black_24dp"
+            android:title="@string/musics" />
+
+        <item
+            android:id="@+id/nav_image"
+            android:icon="@drawable/ic_image_black_24dp"
+            android:title="@string/images" />
+
+        <item
+            android:id="@+id/nav_video"
+            android:icon="@drawable/ic_movie_black_24dp"
+            android:title="@string/videos" />
+        <item
+            android:id="@+id/nav_recent"
+            android:icon="@drawable/ic_recent_black_24dp"
+            android:title="@string/recent" />
+
+        <item
+            android:id="@+id/nav_documents"
+            android:icon="@drawable/ic_picture_as_pdf_black_24dp"
+            android:title="@string/documents" />
+
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Send" />
+        </menu>
+    </item>
+
+</menu>

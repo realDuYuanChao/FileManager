@@ -3,6 +3,7 @@ package com.github.shellhub.filemanager.model.impl;
 import android.util.Log;
 
 import com.github.shellhub.filemanager.entity.FileEntity;
+import com.github.shellhub.filemanager.entity.FileType;
 import com.github.shellhub.filemanager.model.MainModel;
 import com.github.shellhub.filemanager.utils.FileUtils;
 
@@ -23,6 +24,7 @@ public class MainModelImpl implements MainModel {
     private String TAG = this.getClass().getSimpleName();
     private Stack<String> pathStack = new Stack<>();
     private boolean shouldPush = true;
+
     @Override
     public void loadFiles(String rootPath, Callback callback) {
         File file = new File(rootPath);
@@ -30,9 +32,7 @@ public class MainModelImpl implements MainModel {
             return;
         }
 
-        if (shouldPush) {
-            pathStack.push(file.getParent());
-        }
+        Log.d(TAG, "loadFiles: " + pathStack);
 
         List<FileEntity> fileEntities = new ArrayList<>();
         Observable.create((ObservableOnSubscribe<FileEntity>) emitter -> {
@@ -45,6 +45,7 @@ public class MainModelImpl implements MainModel {
                 fileEntity.setFileType(FileUtils.getFileType(files[i]));
                 if (files[i].isDirectory()) {
                     fileEntity.setSubCount(files[i].listFiles().length);
+                    fileEntity.setLastMidify(files[i].lastModified());
                 }
                 emitter.onNext(fileEntity);
             }
@@ -67,19 +68,40 @@ public class MainModelImpl implements MainModel {
 
             @Override
             public void onComplete() {
-                callback.onLoadFiles(fileEntities);
+                callback.onLoadFiles(sortByType(fileEntities));
+                if (shouldPush) {
+                    pathStack.push(rootPath);
+                    shouldPush = true;
+                }
             }
         });
     }
 
     @Override
     public void loadParent(Callback callback) {
-        Log.d(TAG, "loadParent: " + pathStack);
         shouldPush = false;
         if (!pathStack.isEmpty()) {
             loadFiles(pathStack.pop(), callback);
         } else {
             callback.onShouldBackHome();
         }
+    }
+
+    private List<FileEntity> sortByType(List<FileEntity> fileEntities) {
+        List<FileEntity> result = new ArrayList<>();
+        List<FileEntity> folderEntities = new ArrayList<>();
+        List<FileEntity> audioEntities = new ArrayList<>();
+
+        for (FileEntity fileEntity : fileEntities) {
+            if (fileEntity.getFileType() == FileType.TYPE_FOLDER) {
+                folderEntities.add(fileEntity);
+            } else if (fileEntity.getFileType() == FileType.TYPE_AUDIO) {
+                audioEntities.add(fileEntity);
+            }
+        }
+
+        result.addAll(folderEntities);
+        result.addAll(audioEntities);
+        return result;
     }
 }

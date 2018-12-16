@@ -2,7 +2,6 @@ package com.github.shellhub.filemanager.entity;
 
 import android.graphics.drawable.Drawable;
 
-import java.util.List;
 import java.util.Stack;
 
 import lombok.Data;
@@ -18,4 +17,5 @@ public class FileEntity {
     private int resIcon;
     private FileType fileType;
     private int subCount;
+    private long lastMidify;
 }

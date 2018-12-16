@@ -6,43 +6,46 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/iv_audio_album_cover"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:tint="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_folder_black_24dp" />
+        tools:srcCompat="@drawable/ic_audiotrack_black_24dp"
+        tools:tint="@color/colorPrimary" />
 
     <TextView
         android:id="@+id/tvHomeAudioName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:maxLines="1"
         android:textAppearance="@android:style/TextAppearance.Medium"
-        app:layout_constraintBottom_toTopOf="@+id/textView2"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintBottom_toTopOf="@+id/tv_album_name"
+        app:layout_constraintEnd_toStartOf="@+id/iv_home_audio_more_menu"
+        app:layout_constraintStart_toEndOf="@+id/iv_audio_album_cover"
         tools:text="Musics" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/tv_album_name"
         android:layout_width="wrap_content"
         android:layout_height="27dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginBottom="8dp"
         android:maxLines="1"
-        android:text="12/6/17,3:11PM"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView" />
+        app:layout_constraintStart_toEndOf="@+id/iv_audio_album_cover"
+        tools:text="Alan Walker" />
 
     <ImageView
         android:id="@+id/iv_home_audio_more_menu"
@@ -54,4 +57,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_more_vert_black_24dp" />
+
+    <TextView
+        android:id="@+id/tv_home_audio_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_album_name"
+        app:layout_constraintEnd_toStartOf="@+id/iv_home_audio_more_menu"
+        app:layout_constraintTop_toTopOf="@+id/tv_album_name"
+        tools:text="03:21" />
 </androidx.constraintlayout.widget.ConstraintLayout>

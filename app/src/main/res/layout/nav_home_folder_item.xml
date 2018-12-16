@@ -6,14 +6,14 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/iv_home_folder"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:tint="@color/colorAccent"
+        android:tint="@android:color/holo_green_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,27 +21,33 @@
 
     <TextView
         android:id="@+id/tvHomeAudioName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:maxLines="1"
         android:textAppearance="@android:style/TextAppearance.Medium"
-        app:layout_constraintBottom_toTopOf="@+id/textView2"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintBottom_toTopOf="@+id/tv_folder_last_modify_time"
+        app:layout_constraintEnd_toStartOf="@+id/iv_home_audio_more_menu"
+        app:layout_constraintStart_toEndOf="@+id/iv_home_folder"
         tools:text="Musics" />
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="27dp"
+        android:id="@+id/tv_folder_last_modify_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:maxLines="1"
         android:text="12/6/17,3:11PM"
         app:layout_constraintBaseline_toBaselineOf="@+id/tv_home_folder_sub_count"
-        app:layout_constraintStart_toEndOf="@+id/imageView" />
+        app:layout_constraintEnd_toStartOf="@+id/tv_home_folder_sub_count"
+        app:layout_constraintStart_toEndOf="@+id/iv_home_folder" />
 
     <TextView
         android:id="@+id/tv_home_folder_sub_count"

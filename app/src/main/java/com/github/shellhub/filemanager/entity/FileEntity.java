@@ -18,4 +18,9 @@ public class FileEntity {
     private FileType fileType;
     private int subCount;
     private long lastMidify;
+    private byte[] embeddedPicture;
+    private String duration;
+    private String albumName;
+    private String formatLastModify;
+    private String subCountTitle;
 }

@@ -1,15 +1,22 @@
 package com.github.shellhub.filemanager.model.impl;
 
+import android.media.MediaMetadataRetriever;
 import android.util.Log;
 
+import com.github.shellhub.filemanager.R;
 import com.github.shellhub.filemanager.entity.FileEntity;
 import com.github.shellhub.filemanager.entity.FileType;
 import com.github.shellhub.filemanager.model.MainModel;
+import com.github.shellhub.filemanager.utils.AppUtils;
 import com.github.shellhub.filemanager.utils.FileUtils;
+import com.github.shellhub.filemanager.utils.TimeUtils;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Stack;
 
 import io.reactivex.Observable;
@@ -52,9 +59,36 @@ public class MainModelImpl implements MainModel {
                 fileEntity.setName(files[i].getName());
                 fileEntity.setPath(files[i].getPath());
                 fileEntity.setFileType(FileUtils.getFileType(files[i]));
-                if (files[i].isDirectory()) {
+
+                FileType fileType = FileUtils.getFileType(files[i]);
+                if (fileType == FileType.TYPE_FOLDER) {
                     fileEntity.setSubCount(files[i].listFiles().length);
                     fileEntity.setLastMidify(files[i].lastModified());
+
+                    fileEntity.setFormatLastModify(new SimpleDateFormat("MM/d/YY,hh:mm a", Locale.ENGLISH)
+                            .format(new Date(fileEntity.getLastMidify())));
+
+                    int subCount = files[i].listFiles().length;
+                    String subCountTitle;
+                    if (files[i].listFiles().length > 1) {
+                        subCountTitle = "(" + subCount + " " + AppUtils.getApp().getResources().getString(R.string.items) + ")";//e.g(2 items)
+                    } else {
+                        subCountTitle = "(" + subCount + " " + AppUtils.getApp().getResources().getString(R.string.item) + ")";//e.g(1 item)
+                    }
+                    fileEntity.setSubCountTitle(subCountTitle);
+
+
+                } else if (fileType == FileType.TYPE_AUDIO) {
+                    //extra meta tools
+                    MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                    mmr.setDataSource(fileEntity.getPath());
+                    fileEntity.setEmbeddedPicture(mmr.getEmbeddedPicture());
+                    fileEntity.setAlbumName(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM));
+                    fileEntity.setDuration(TimeUtils.formatDuration(Integer.valueOf(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))));
+                } else if (fileType == FileType.TYPE_PDF) {
+                    //todo
+                } else if (fileType == FileType.TYPE_IMAGE) {
+                    //todo
                 }
                 emitter.onNext(fileEntity);
             }

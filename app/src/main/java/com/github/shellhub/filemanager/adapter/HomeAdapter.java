@@ -1,7 +1,6 @@
 package com.github.shellhub.filemanager.adapter;
 
 import android.content.Context;
-import android.media.MediaMetadataRetriever;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,16 +13,11 @@ import com.github.shellhub.filemanager.R;
 import com.github.shellhub.filemanager.entity.FileEntity;
 import com.github.shellhub.filemanager.entity.FileType;
 import com.github.shellhub.filemanager.event.FileEntityEvent;
-import com.github.shellhub.filemanager.utils.TimeUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -108,19 +102,8 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public void bind(int position) {
             FileEntity fileEntity = fileEntities.get(position);
             tvHomeFolderName.setText(fileEntity.getName());
-
-            //init last modify time
-            DateFormat dateFormat = new SimpleDateFormat("MM/d/YY,hh:mm a", Locale.ENGLISH);
-            String result = dateFormat.format(new Date(fileEntity.getLastMidify()));
-            tvFolderLastModifyTime.setText(result);
-
-            String subCountTitle;
-            if (fileEntity.getSubCount() > 1) {
-                subCountTitle = "(" + fileEntities.get(position).getSubCount() + " " + mContext.getResources().getString(R.string.items) + ")";//e.g(2 items)
-            } else {
-                subCountTitle = "(" + fileEntities.get(position).getSubCount() + " " + mContext.getResources().getString(R.string.item) + ")";//e.g(1 item)
-            }
-            tvHomeFolderSubCount.setText(subCountTitle);
+            tvFolderLastModifyTime.setText(fileEntity.getFormatLastModify());
+            tvHomeFolderSubCount.setText(fileEntity.getSubCountTitle());
 
             ivHomeFolderMoreMenu.setOnClickListener((view) -> {
                 PopupMenu popupMenu = new PopupMenu(mContext, view);
@@ -173,22 +156,10 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public void bind(int position) {
             FileEntity fileEntity = fileEntities.get(position);
-
-            //init audio(title)
             tvHomeAudioName.setText(fileEntity.getName());
-
-            //extra meta tools
-            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(fileEntity.getPath());
-
-            //init album name
-            tvAlbumName.setText(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM));
-
-            //init album cover
-            Glide.with(mContext).load(mmr.getEmbeddedPicture()).into(ivAudioAlbumCover);
-
-            //init duration
-            tvHomeAudioDuration.setText(TimeUtils.formatDuration(Integer.valueOf(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))));
+            tvAlbumName.setText(fileEntity.getAlbumName());
+            Glide.with(mContext).load(fileEntity.getEmbeddedPicture()).into(ivAudioAlbumCover);
+            tvHomeAudioDuration.setText(fileEntity.getDuration());
         }
     }
 }

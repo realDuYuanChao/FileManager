@@ -22,14 +22,23 @@ import io.reactivex.schedulers.Schedulers;
 public class MainModelImpl implements MainModel {
 
     private String TAG = this.getClass().getSimpleName();
-    private Stack<String> pathStack = new Stack<>();
+    private static Stack<String> pathStack = new Stack<>();
     private boolean shouldPush = true;
+
+    static {
+        pathStack.add("/sdcard/");
+    }
 
     @Override
     public void loadFiles(String rootPath, Callback callback) {
         File file = new File(rootPath);
         if (!file.isDirectory()) {
             return;
+        }
+
+        if (shouldPush) {
+            pathStack.add(rootPath);
+            shouldPush = true;
         }
 
         Log.d(TAG, "loadFiles: " + pathStack);
@@ -69,10 +78,6 @@ public class MainModelImpl implements MainModel {
             @Override
             public void onComplete() {
                 callback.onLoadFiles(sortByType(fileEntities));
-                if (shouldPush) {
-                    pathStack.push(rootPath);
-                    shouldPush = true;
-                }
             }
         });
     }
@@ -80,8 +85,9 @@ public class MainModelImpl implements MainModel {
     @Override
     public void loadParent(Callback callback) {
         shouldPush = false;
-        if (!pathStack.isEmpty()) {
-            loadFiles(pathStack.pop(), callback);
+        if (pathStack.size() >= 2) {
+            pathStack.pop();
+            loadFiles(pathStack.peek(), callback);
         } else {
             callback.onShouldBackHome();
         }

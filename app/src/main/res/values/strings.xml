@@ -21,4 +21,8 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="permission_storage_ration">FileManager need storage permission to work</string>
+    <string name="select">Select</string>
+    <string name="select_all">Select All</string>
+    <string name="open">Open</string>
+    <string name="properties">Properties</string>
 </resources>

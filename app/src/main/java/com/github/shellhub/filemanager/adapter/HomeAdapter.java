@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -26,6 +25,9 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.appcompat.view.menu.MenuPopupHelper;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,12 +35,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    @Setter@Getter
+    @Setter
+    @Getter
     List<FileEntity> fileEntities = new ArrayList<>();
     private Context mContext;
 
     private final int TYPE_FOLDER = 0;
     private final int TYPE_AUDIO = 1;
+    private final int TYPE_IMAGE = 2;
 
     @NonNull
     @Override
@@ -113,11 +117,22 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             tvHomeFolderSubCount.setText(fileEntity.getSubCountTitle());
 
             ivHomeFolderMoreMenu.setOnClickListener((view) -> {
-                PopupMenu popupMenu = new PopupMenu(mContext, view);
-                popupMenu.getMenuInflater().inflate(R.menu.pop, popupMenu.getMenu());
-                popupMenu.setOnMenuItemClickListener(item -> {
+                PopupMenu menu = new PopupMenu(mContext, view);
+                menu.inflate(R.menu.pop);
+                MenuPopupHelper menuHelper = new MenuPopupHelper(mContext, (MenuBuilder) menu.getMenu(), view);
+                menuHelper.setForceShowIcon(true);
+                menuHelper.show();
+                menu.setOnMenuItemClickListener(item -> {
                     FileActionEvent fileActionEvent = null;
                     switch (item.getItemId()) {
+                        case R.id.open:
+                            //TODO
+                            break;
+                        case R.id.select:
+                            //TODO
+                            break;
+                        case R.id.select_all:
+                            break;
                         case R.id.rename:
                             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                             builder.setTitle(AppUtils.getApp().getResources().getString(R.string.rename));
@@ -137,7 +152,6 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                         EventBus.getDefault().post(event);
                                     }).setNegativeButton(AppUtils.getApp().getResources().getString(R.string.cancel),
                                     (dialog, which) -> dialog.cancel()).show();
-
                             break;
                         case R.id.delete:
                             fileActionEvent = new FileActionEvent(fileEntity, FileAction.ACTION_DELETE, position);
@@ -148,13 +162,16 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         case R.id.cut:
                             fileActionEvent = new FileActionEvent(fileEntity, FileAction.ACTION_CUT, position);
                             break;
+                        case R.id.properties:
+                            //TODO
+                            break;
                         default:
                             fileActionEvent = null; //this won't execute
                             break;
                     }
                     return true;
                 });
-                popupMenu.show();
+
             });
             itemView.setOnClickListener((view) -> {
                 EventBus.getDefault().post(new FileEntityEvent(fileEntity, position));

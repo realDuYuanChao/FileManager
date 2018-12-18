@@ -1,13 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item
-        android:id="@+id/rename"
-        android:icon="@drawable/ic_rename_black_24dp"
-        android:title="@string/rename" />
+        android:id="@+id/open"
+        android:icon="@drawable/ic_visibility_black_24dp"
+        android:title="@string/open" />
+    <item
+        android:id="@+id/select"
+        android:icon="@drawable/ic_check_black_24dp"
+        android:title="@string/select" />
+
+    <item
+        android:id="@+id/select_all"
+        android:icon="@drawable/ic_select_all_black_24dp"
+        android:title="@string/select_all" />
+
     <item
         android:id="@+id/delete"
         android:icon="@drawable/ic_delete_black_24dp"
         android:title="@string/delete" />
+
+    <item
+        android:id="@+id/rename"
+        android:icon="@drawable/ic_rename_black_24dp"
+        android:title="@string/rename" />
+
     <item
         android:id="@+id/copy"
         android:icon="@drawable/ic_content_copy_black_24dp"
@@ -16,5 +33,9 @@
         android:id="@+id/cut"
         android:icon="@drawable/ic_content_cut_black_24dp"
         android:title="@string/cut" />
+    <item
+        android:id="@+id/properties"
+        android:icon="@drawable/ic_description_black_24dp"
+        android:title="@string/properties" />
 
 </menu>

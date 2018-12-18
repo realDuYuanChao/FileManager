@@ -1,8 +1,14 @@
 package com.github.shellhub.filemanager.activity;
 
+import android.Manifest;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.github.shellhub.filemanager.R;
 import com.github.shellhub.filemanager.entity.FileEntity;
@@ -23,14 +29,22 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
+@RuntimePermissions
 public class MainActivity extends BaseActivity
         implements MainView, NavigationView.OnNavigationItemSelectedListener {
 
@@ -63,8 +77,9 @@ public class MainActivity extends BaseActivity
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
-        mainPresenter.loadFiles("/sdcard/");
 
+        //request permission
+        MainActivityPermissionsDispatcher.initHomeWithPermissionCheck(this);
     }
 
     @Override
@@ -112,6 +127,47 @@ public class MainActivity extends BaseActivity
     @Override
     public void rename(RenameEvent renameEvent) {
         EventBus.getDefault().post(renameEvent);
+    }
+
+    @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    @Override
+    public void initHome() {
+        mainPresenter.loadFiles("/sdcard/");
+    }
+
+    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void permissionRequest() {
+
+    }
+
+    @OnShowRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void showRationForStorage(final PermissionRequest request) {
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.permission_storage_ration)
+                .setNegativeButton(R.string.ok, (dialog, which) -> request.proceed())
+                .setPositiveButton(R.string.cancel, (dialog, which) -> dialog.cancel()).show();
+    }
+
+    @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void showDeniedForStorage() {
+        //TODO
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+        startActivity(intent);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void showNeverAskForStorage() {
+        //TODO
+        Toast.makeText(this, "you have disable permission", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @Override

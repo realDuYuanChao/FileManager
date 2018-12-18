@@ -20,4 +20,5 @@
     <string name="cut">Cut</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="permission_storage_ration">FileManager need storage permission to work</string>
 </resources>

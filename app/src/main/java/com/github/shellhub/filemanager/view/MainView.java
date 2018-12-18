@@ -11,4 +11,6 @@ public interface MainView {
     void exit();
 
     void rename(RenameEvent renameEvent);
+
+    void initHome();
 }

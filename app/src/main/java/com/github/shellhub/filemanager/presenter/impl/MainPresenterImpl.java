@@ -1,6 +1,8 @@
 package com.github.shellhub.filemanager.presenter.impl;
 
 import com.github.shellhub.filemanager.entity.FileEntity;
+import com.github.shellhub.filemanager.event.FileActionEvent;
+import com.github.shellhub.filemanager.event.RenameEvent;
 import com.github.shellhub.filemanager.model.MainModel;
 import com.github.shellhub.filemanager.model.impl.MainModelImpl;
 import com.github.shellhub.filemanager.presenter.MainPresenter;
@@ -29,6 +31,11 @@ public class MainPresenterImpl implements MainPresenter, MainModel.Callback{
     }
 
     @Override
+    public void handleFileAction(FileActionEvent fileActionEvent) {
+        mainModel.handleFileAction(fileActionEvent, this);
+    }
+
+    @Override
     public void onLoadFiles(List<FileEntity> fileEntities) {
         mainView.showFiles(fileEntities);
     }
@@ -36,5 +43,10 @@ public class MainPresenterImpl implements MainPresenter, MainModel.Callback{
     @Override
     public void onShouldBackHome() {
         mainView.exit();
+    }
+
+    @Override
+    public void onRenameCompleted(RenameEvent renameEvent) {
+        mainView.rename(renameEvent);
     }
 }

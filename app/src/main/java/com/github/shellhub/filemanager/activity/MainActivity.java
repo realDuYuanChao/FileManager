@@ -1,14 +1,15 @@
 package com.github.shellhub.filemanager.activity;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.shellhub.filemanager.R;
 import com.github.shellhub.filemanager.entity.FileEntity;
+import com.github.shellhub.filemanager.event.FileActionEvent;
 import com.github.shellhub.filemanager.event.FileEntitiesEvent;
 import com.github.shellhub.filemanager.event.FileEntityEvent;
+import com.github.shellhub.filemanager.event.RenameEvent;
 import com.github.shellhub.filemanager.fragment.HomeFragment;
 import com.github.shellhub.filemanager.presenter.MainPresenter;
 import com.github.shellhub.filemanager.presenter.impl.MainPresenterImpl;
@@ -21,9 +22,9 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
-import java.util.Stack;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -44,7 +45,6 @@ public class MainActivity extends BaseActivity
 
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
-
 
     private String TAG = this.getClass().getSimpleName();
     private MainPresenter mainPresenter;
@@ -110,6 +110,11 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
+    public void rename(RenameEvent renameEvent) {
+        EventBus.getDefault().post(renameEvent);
+    }
+
+    @Override
     public void setUpMVP() {
         mainPresenter = new MainPresenterImpl(this);
         getSupportFragmentManager().beginTransaction().replace(R.id.main_container, new HomeFragment()).commit();
@@ -120,4 +125,10 @@ public class MainActivity extends BaseActivity
     public void onFileEntityEvent(FileEntityEvent entityEvent) {
         mainPresenter.loadFiles(entityEvent.getFileEntity().getPath());
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onFileActionEvent(FileActionEvent fileActionEvent) {
+        mainPresenter.handleFileAction(fileActionEvent);
+    }
+
 }

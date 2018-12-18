@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import com.github.shellhub.filemanager.R;
 import com.github.shellhub.filemanager.adapter.HomeAdapter;
 import com.github.shellhub.filemanager.event.FileEntitiesEvent;
+import com.github.shellhub.filemanager.event.RenameEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -55,5 +56,11 @@ public class HomeFragment extends Fragment {
     public void onFileEntitiesEvent(FileEntitiesEvent event) {
         adapter.setFileEntities(event.getFileEntities());
         adapter.notifyDataSetChanged();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRenameEvent(RenameEvent renameEvent) {
+        adapter.getFileEntities().set(renameEvent.getPosition(), renameEvent.getFileEntity());
+        adapter.notifyItemChanged(renameEvent.getPosition());
     }
 }

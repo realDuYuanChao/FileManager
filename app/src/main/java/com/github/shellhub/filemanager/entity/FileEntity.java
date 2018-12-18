@@ -9,9 +9,11 @@ import lombok.Data;
 @Data
 public class FileEntity {
     private String name;
+    private String newName;
     private String parentPath;
     private Stack<String> pathStack = new Stack<>();
     private String path;
+    private String newPath;
     private long size; /*in bits*/
     private Drawable drawableIcon;
     private int resIcon;

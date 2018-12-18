@@ -1,18 +1,23 @@
 package com.github.shellhub.filemanager.adapter;
 
 import android.content.Context;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.github.shellhub.filemanager.R;
+import com.github.shellhub.filemanager.entity.FileAction;
 import com.github.shellhub.filemanager.entity.FileEntity;
 import com.github.shellhub.filemanager.entity.FileType;
+import com.github.shellhub.filemanager.event.FileActionEvent;
 import com.github.shellhub.filemanager.event.FileEntityEvent;
+import com.github.shellhub.filemanager.utils.AppUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -20,13 +25,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import lombok.Getter;
 import lombok.Setter;
 
 public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    @Setter
+    @Setter@Getter
     List<FileEntity> fileEntities = new ArrayList<>();
     private Context mContext;
 
@@ -109,16 +116,40 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 PopupMenu popupMenu = new PopupMenu(mContext, view);
                 popupMenu.getMenuInflater().inflate(R.menu.pop, popupMenu.getMenu());
                 popupMenu.setOnMenuItemClickListener(item -> {
+                    FileActionEvent fileActionEvent = null;
                     switch (item.getItemId()) {
                         case R.id.rename:
+                            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                            builder.setTitle(AppUtils.getApp().getResources().getString(R.string.rename));
+
+                            // Set up the input
+                            final EditText input = new EditText(mContext);
+                            input.setText("");
+                            input.append(fileEntity.getName());
+                            input.setInputType(InputType.TYPE_CLASS_TEXT);
+                            builder.setView(input);
+
+                            builder.setPositiveButton(AppUtils.getApp().getResources().getString(R.string.ok),
+                                    (dialog, which) -> {
+                                        String newName = input.getText().toString();
+                                        FileActionEvent event = new FileActionEvent(fileEntity, FileAction.ACTION_RENAME, position);
+                                        event.getFileEntity().setNewName(newName);
+                                        EventBus.getDefault().post(event);
+                                    }).setNegativeButton(AppUtils.getApp().getResources().getString(R.string.cancel),
+                                    (dialog, which) -> dialog.cancel()).show();
+
                             break;
                         case R.id.delete:
+                            fileActionEvent = new FileActionEvent(fileEntity, FileAction.ACTION_DELETE, position);
                             break;
                         case R.id.copy:
+                            fileActionEvent = new FileActionEvent(fileEntity, FileAction.ACTION_COPY, position);
                             break;
                         case R.id.cut:
+                            fileActionEvent = new FileActionEvent(fileEntity, FileAction.ACTION_CUT, position);
                             break;
                         default:
+                            fileActionEvent = null; //this won't execute
                             break;
                     }
                     return true;
@@ -126,7 +157,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 popupMenu.show();
             });
             itemView.setOnClickListener((view) -> {
-                EventBus.getDefault().post(new FileEntityEvent(fileEntities.get(position)));
+                EventBus.getDefault().post(new FileEntityEvent(fileEntity, position));
             });
         }
     }

@@ -6,6 +6,8 @@ import android.util.Log;
 import com.github.shellhub.filemanager.R;
 import com.github.shellhub.filemanager.entity.FileEntity;
 import com.github.shellhub.filemanager.entity.FileType;
+import com.github.shellhub.filemanager.event.FileActionEvent;
+import com.github.shellhub.filemanager.event.RenameEvent;
 import com.github.shellhub.filemanager.model.MainModel;
 import com.github.shellhub.filemanager.utils.AppUtils;
 import com.github.shellhub.filemanager.utils.FileUtils;
@@ -124,6 +126,43 @@ public class MainModelImpl implements MainModel {
             loadFiles(pathStack.peek(), callback);
         } else {
             callback.onShouldBackHome();
+        }
+    }
+
+    @Override
+    public void handleFileAction(FileActionEvent fileActionEvent, Callback callback) {
+        switch (fileActionEvent.getFileAction()) {
+            case ACTION_RENAME:
+                //rename file
+                FileEntity fileEntity = fileActionEvent.getFileEntity();
+                String newName = fileEntity.getNewName();
+                String name = fileEntity.getName();
+
+                String path = fileEntity.getPath();
+                String newPath = path.replace(name, newName);
+
+                Log.d(TAG, "handleFileAction: " + path + "->" + newPath);
+                boolean renamed = new File(path).renameTo(new File(newPath));
+
+                if (renamed) {
+                    fileEntity.setName(newName);
+                    fileEntity.setNewName(newName);
+                    fileEntity.setPath(newPath);
+                    fileEntity.setNewPath(newPath);
+                    callback.onRenameCompleted(new RenameEvent(fileEntity, fileActionEvent.getPosition()));
+                } else {
+                    Log.e(TAG, "handleFileAction: renamed file " + path + "to " + newPath + "failed");
+                }
+                break;
+            case ACTION_DELETE:
+                //delete file
+                break;
+            case ACTION_COPY:
+                //copy file
+                break;
+            case ACTION_CUT:
+                //cut file
+                break;
         }
     }
 

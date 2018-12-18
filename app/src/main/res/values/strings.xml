@@ -18,4 +18,6 @@
     <string name="delete">Delete</string>
     <string name="copy">Copy</string>
     <string name="cut">Cut</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>

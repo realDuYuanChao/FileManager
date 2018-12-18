@@ -191,6 +191,10 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             tvAlbumName.setText(fileEntity.getAlbumName());
             Glide.with(mContext).load(fileEntity.getEmbeddedPicture()).into(ivAudioAlbumCover);
             tvHomeAudioDuration.setText(fileEntity.getDuration());
+
+            itemView.setOnClickListener((view) -> {
+                EventBus.getDefault().post(new FileActionEvent(fileEntity, FileAction.ACTION_PLAY, position));
+            });
         }
     }
 }

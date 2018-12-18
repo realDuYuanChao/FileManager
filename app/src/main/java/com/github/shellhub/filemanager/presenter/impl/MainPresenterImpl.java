@@ -49,4 +49,9 @@ public class MainPresenterImpl implements MainPresenter, MainModel.Callback{
     public void onRenameCompleted(RenameEvent renameEvent) {
         mainView.rename(renameEvent);
     }
+
+    @Override
+    public void onAudioLoad(String audioPath) {
+        mainView.playAudio(audioPath);
+    }
 }

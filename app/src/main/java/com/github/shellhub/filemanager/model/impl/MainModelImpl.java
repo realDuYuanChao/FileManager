@@ -162,6 +162,9 @@ public class MainModelImpl implements MainModel {
                 break;
             case ACTION_CUT:
                 //cut file
+            case ACTION_PLAY:
+                String audioPath = fileActionEvent.getFileEntity().getPath();
+                if (audioPath != null) callback.onAudioLoad(audioPath);
                 break;
         }
     }

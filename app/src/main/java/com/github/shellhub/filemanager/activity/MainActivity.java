@@ -27,12 +27,14 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import butterknife.BindView;
@@ -133,6 +135,15 @@ public class MainActivity extends BaseActivity
     @Override
     public void initHome() {
         mainPresenter.loadFiles("/sdcard/");
+    }
+
+    @Override
+    public void playAudio(String audioPath) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Uri photoURI = FileProvider.getUriForFile(this, getPackageName() + ".provider", new File(audioPath));
+        intent.setDataAndType(photoURI, "audio/*");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivity(intent);
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)

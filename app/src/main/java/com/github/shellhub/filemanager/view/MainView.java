@@ -13,4 +13,6 @@ public interface MainView {
     void rename(RenameEvent renameEvent);
 
     void initHome();
+
+    void playAudio(String audioPath);
 }

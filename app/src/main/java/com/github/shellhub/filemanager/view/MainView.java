@@ -15,4 +15,6 @@ public interface MainView {
     void initHome();
 
     void playAudio(String audioPath);
+
+    void delete(int position);
 }

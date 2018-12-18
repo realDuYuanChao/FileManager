@@ -1,7 +1,6 @@
 package com.github.shellhub.filemanager.activity;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +11,7 @@ import android.widget.Toast;
 
 import com.github.shellhub.filemanager.R;
 import com.github.shellhub.filemanager.entity.FileEntity;
+import com.github.shellhub.filemanager.entity.FileRemoveEvent;
 import com.github.shellhub.filemanager.event.FileActionEvent;
 import com.github.shellhub.filemanager.event.FileEntitiesEvent;
 import com.github.shellhub.filemanager.event.FileEntityEvent;
@@ -144,6 +144,11 @@ public class MainActivity extends BaseActivity
         intent.setDataAndType(photoURI, "audio/*");
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         startActivity(intent);
+    }
+
+    @Override
+    public void delete(int position) {
+        EventBus.getDefault().post(new FileRemoveEvent(position));
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)

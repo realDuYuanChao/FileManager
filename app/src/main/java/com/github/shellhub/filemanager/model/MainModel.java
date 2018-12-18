@@ -17,6 +17,8 @@ public interface MainModel {
         void onRenameCompleted(RenameEvent renameEvent);
 
         void onAudioLoad(String audioPath);
+
+        void onDeleted(int position);
     }
 
     void loadFiles(String rootPath, Callback callback);

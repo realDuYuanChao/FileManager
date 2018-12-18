@@ -131,10 +131,33 @@ public class MainModelImpl implements MainModel {
 
     @Override
     public void handleFileAction(FileActionEvent fileActionEvent, Callback callback) {
+        FileEntity fileEntity = fileActionEvent.getFileEntity();
+        int position = fileActionEvent.getPosition();
         switch (fileActionEvent.getFileAction()) {
+            case ACTION_OPEN:
+                switch (fileEntity.getFileType()) {
+                    case TYPE_FOLDER:
+                        loadFiles(fileEntity.getPath(), callback);
+                        break;
+                    case TYPE_AUDIO:
+                        String audioPath = fileActionEvent.getFileEntity().getPath();
+                        if (audioPath != null) callback.onAudioLoad(audioPath);
+                        break;
+                    case TYPE_VIDEO:
+                        //todo
+                        break;
+                    case TYPE_IMAGE:
+                        break;
+                    case TYPE_PDF:
+                        break;
+                    case TYPE_TEXT:
+                        break;
+                    case TYPE_UNKNOWN:
+                }
+                break;
             case ACTION_RENAME:
                 //rename file
-                FileEntity fileEntity = fileActionEvent.getFileEntity();
+                fileEntity = fileActionEvent.getFileEntity();
                 String newName = fileEntity.getNewName();
                 String name = fileEntity.getName();
 
@@ -155,16 +178,14 @@ public class MainModelImpl implements MainModel {
                 }
                 break;
             case ACTION_DELETE:
-                //delete file
+                boolean deleted = new File(fileEntity.getPath()).delete();
+                if (deleted) callback.onDeleted(position);
                 break;
             case ACTION_COPY:
                 //copy file
                 break;
             case ACTION_CUT:
                 //cut file
-            case ACTION_PLAY:
-                String audioPath = fileActionEvent.getFileEntity().getPath();
-                if (audioPath != null) callback.onAudioLoad(audioPath);
                 break;
         }
     }

@@ -16,6 +16,14 @@ public class FileActionEvent {
         this.position = position;
     }
 
+    public FileActionEvent() {
+    }
+
+    public FileActionEvent(FileEntity fileEntity, int position) {
+        this.fileEntity = fileEntity;
+        this.position = position;
+    }
+
     private int position;
 
 }

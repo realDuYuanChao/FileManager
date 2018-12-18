@@ -54,4 +54,9 @@ public class MainPresenterImpl implements MainPresenter, MainModel.Callback{
     public void onAudioLoad(String audioPath) {
         mainView.playAudio(audioPath);
     }
+
+    @Override
+    public void onDeleted(int position) {
+        mainView.delete(position);
+    }
 }

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.github.shellhub.filemanager.R;
 import com.github.shellhub.filemanager.adapter.HomeAdapter;
+import com.github.shellhub.filemanager.entity.FileRemoveEvent;
 import com.github.shellhub.filemanager.event.FileEntitiesEvent;
 import com.github.shellhub.filemanager.event.RenameEvent;
 
@@ -62,5 +63,10 @@ public class HomeFragment extends Fragment {
     public void onRenameEvent(RenameEvent renameEvent) {
         adapter.getFileEntities().set(renameEvent.getPosition(), renameEvent.getFileEntity());
         adapter.notifyItemChanged(renameEvent.getPosition());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onFileRemoveEvent(FileRemoveEvent fileRemoveEvent) {
+        adapter.notifyItemRemoved(fileRemoveEvent.getPosition());
     }
 }

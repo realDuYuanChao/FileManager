@@ -5,5 +5,5 @@ public enum  FileAction {
     ACTION_DELETE,
     ACTION_COPY,
     ACTION_CUT,
-    ACTION_PLAY,
+    ACTION_OPEN,
 }

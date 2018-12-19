@@ -14,6 +14,7 @@ import com.github.shellhub.filemanager.R;
 import com.github.shellhub.filemanager.entity.FileEntity;
 import com.github.shellhub.filemanager.entity.FileRemoveEvent;
 import com.github.shellhub.filemanager.entity.ScrollEvent;
+import com.github.shellhub.filemanager.entity.ShowModeEvent;
 import com.github.shellhub.filemanager.event.FileActionEvent;
 import com.github.shellhub.filemanager.event.FileEntitiesEvent;
 import com.github.shellhub.filemanager.event.FileEntityEvent;
@@ -67,6 +68,8 @@ public class MainActivity extends BaseActivity
     private String TAG = this.getClass().getSimpleName();
     private MainPresenter mainPresenter;
 
+    private boolean isGrid = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,7 +111,18 @@ public class MainActivity extends BaseActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.bulleted:
+                if (isGrid) {
+                    item.setIcon(R.drawable.ic_format_list_bulleted_white_24dp);
+                } else {
+                    item.setIcon(R.drawable.ic_view_module_white_24dp);
+                }
+                isGrid = !isGrid;
+                EventBus.getDefault().post(new ShowModeEvent());
+                break;
+        }
+        return true;
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

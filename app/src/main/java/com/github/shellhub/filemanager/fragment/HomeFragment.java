@@ -10,6 +10,7 @@ import com.github.shellhub.filemanager.R;
 import com.github.shellhub.filemanager.adapter.HomeAdapter;
 import com.github.shellhub.filemanager.entity.FileRemoveEvent;
 import com.github.shellhub.filemanager.entity.ScrollEvent;
+import com.github.shellhub.filemanager.entity.ShowModeEvent;
 import com.github.shellhub.filemanager.event.FileEntitiesEvent;
 import com.github.shellhub.filemanager.event.RenameEvent;
 
@@ -21,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -32,6 +34,7 @@ public class HomeFragment extends Fragment {
     RecyclerView rvMain;
 
     private HomeAdapter adapter;
+    private boolean isGrid = false;
 
     @Nullable
     @Override
@@ -57,6 +60,18 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    private void updateAdapter() {
+        if (isGrid) {
+            rvMain.setLayoutManager(new GridLayoutManager(getContext(), 3));
+            adapter.setGrid(true);
+            adapter.notifyDataSetChanged();
+        } else {
+            rvMain.setLayoutManager(new LinearLayoutManager(getContext()));
+            adapter.setGrid(false);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
     @Override
     public void onStop() {
         super.onStop();
@@ -80,5 +95,11 @@ public class HomeFragment extends Fragment {
         int removePosition = fileRemoveEvent.getPosition();
         adapter.getFileEntities().remove(removePosition);
         adapter.notifyItemRemoved(removePosition);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShowModeEvent(ShowModeEvent event) {
+        isGrid = !isGrid;
+        updateAdapter();
     }
 }

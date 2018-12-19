@@ -1,7 +1,6 @@
 package com.github.shellhub.filemanager.adapter;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.github.shellhub.filemanager.R;
@@ -35,9 +33,9 @@ import butterknife.ButterKnife;
 import lombok.Getter;
 import lombok.Setter;
 
+@Setter
+@Getter
 public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    @Setter
-    @Getter
     List<FileEntity> fileEntities = new ArrayList<>();
     private Context mContext;
 
@@ -45,6 +43,9 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final int TYPE_AUDIO = 1;
     private final int TYPE_IMAGE = 2;
     private final int TYPE_TXT = 3;
+    private final int TYPE_GRID = 4;
+
+    private boolean isGrid = false;
 
     @NonNull
     @Override
@@ -67,6 +68,10 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 view = LayoutInflater.from(mContext).inflate(R.layout.nav_home_txt_item, parent, false);
                 ButterKnife.bind(this, view);
                 return new HomeTXTViewHolder(view);
+            case TYPE_GRID:
+                view = LayoutInflater.from(mContext).inflate(R.layout.nav_home_grid_item, parent, false);
+                ButterKnife.bind(this, view);
+                return new HomeGridViewHolder(view);
             default:
                 return null;
         }
@@ -81,11 +86,16 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((HomeAudioViewHolder) holder).bind(position);
         } else if (holder instanceof HomeTXTViewHolder) {
             ((HomeTXTViewHolder) holder).bind(position);
+        } else if (holder instanceof HomeGridViewHolder) {
+            ((HomeGridViewHolder) holder).bind(position);
         }
     }
 
     @Override
     public int getItemViewType(int position) {
+        if (isGrid) {
+            return TYPE_GRID;
+        }
         FileEntity fileEntity = fileEntities.get(position);
         if (fileEntity.getFileType() == FileType.TYPE_FOLDER) {
             return TYPE_FOLDER;
@@ -205,6 +215,46 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             tvTXTLastModifyTime.setText(fileEntity.getFormatLastModify());
             tvHomeTXTSize.setText(fileEntity.getFormatSize());
             showPopMenu(ivHomeTXTMoreMenu, fileEntity, position);
+            itemView.setOnClickListener((view) -> {
+                EventBus.getDefault().post(new FileActionEvent(fileEntity, FileAction.ACTION_OPEN, position));
+            });
+        }
+    }
+
+    public class HomeGridViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.tv_home_grid_name)
+        TextView tvHomeGridName;
+
+        @BindView(R.id.iv_home_grid_more)
+        ImageView ivHomeGridMore;
+
+        @BindView(R.id.iv_home_grid_pic)
+        ImageView ivHomeGridPic;
+
+
+        public HomeGridViewHolder(@NonNull View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+
+        public void bind(int position) {
+            FileEntity fileEntity = fileEntities.get(position);
+            tvHomeGridName.setText(fileEntity.getName());
+
+            switch (fileEntity.getFileType()) {
+                case TYPE_FOLDER:
+                    Glide.with(mContext).load(R.drawable.ic_folder_black_24dp).into(ivHomeGridPic);
+                    break;
+                case TYPE_AUDIO:
+                    Glide.with(mContext).load(fileEntity.getEmbeddedPicture()).into(ivHomeGridPic);
+                    break;
+                case TYPE_TEXT:
+                    Glide.with(mContext).load(R.drawable.ic_txt_type).into(ivHomeGridPic);
+                    break;
+            }
+
+            showPopMenu(ivHomeGridMore, fileEntity, position);
             itemView.setOnClickListener((view) -> {
                 EventBus.getDefault().post(new FileActionEvent(fileEntity, FileAction.ACTION_OPEN, position));
             });

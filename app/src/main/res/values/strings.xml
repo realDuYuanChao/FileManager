@@ -33,4 +33,6 @@
     <string name="file_size_label">File Size:</string>
     <string name="modified_date_label">Modified Date:</string>
     <string name="folder">Folder</string>
+    <string name="new_folder">New Folder</string>
+    <string name="new_file">New File</string>
 </resources>

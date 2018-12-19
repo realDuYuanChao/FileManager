@@ -19,6 +19,10 @@ public interface MainModel {
         void onAudioLoad(String audioPath);
 
         void onDeleted(int position);
+
+        void onFolderCreated(FileEntity fileEntity);
+
+        void onFileCreated(FileEntity fileEntity);
     }
 
     void loadFiles(String rootPath, Callback callback);
@@ -27,4 +31,7 @@ public interface MainModel {
 
     void handleFileAction(FileActionEvent fileActionEvent, Callback callback);
 
+    void createFolder(String name, Callback callback);
+
+    void createFile(String name, Callback callback);
 }

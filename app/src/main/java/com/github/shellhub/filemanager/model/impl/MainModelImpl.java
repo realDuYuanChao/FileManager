@@ -198,6 +198,27 @@ public class MainModelImpl implements MainModel {
         }
     }
 
+    @Override
+    public void createFolder(String name, Callback callback) {
+        File newFile = new File(pathStack.peek(), name);
+        boolean created = newFile.mkdir();
+        if (created) {
+            FileEntity fileEntity = new FileEntity();
+            fileEntity.setSize(newFile.length());
+            fileEntity.setPath(newFile.getPath());
+            fileEntity.setName(newFile.getName());
+            fileEntity.setLastMidify(newFile.lastModified());
+            //todo
+
+            callback.onFolderCreated(fileEntity);
+        }
+    }
+
+    @Override
+    public void createFile(String name, Callback callback) {
+
+    }
+
     private List<FileEntity> sortByType(List<FileEntity> fileEntities) {
         List<FileEntity> result = new ArrayList<>();
         List<FileEntity> folderEntities = new ArrayList<>();

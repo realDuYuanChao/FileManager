@@ -1,7 +1,6 @@
 package com.github.shellhub.filemanager.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,7 @@ import com.github.shellhub.filemanager.entity.FileRemoveEvent;
 import com.github.shellhub.filemanager.entity.ScrollEvent;
 import com.github.shellhub.filemanager.entity.ShowModeEvent;
 import com.github.shellhub.filemanager.event.FileEntitiesEvent;
+import com.github.shellhub.filemanager.event.FileEntityEvent;
 import com.github.shellhub.filemanager.event.RenameEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -101,5 +101,11 @@ public class HomeFragment extends Fragment {
     public void onShowModeEvent(ShowModeEvent event) {
         isGrid = !isGrid;
         updateAdapter();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onFileEntityEvent(FileEntityEvent fileEntityEvent) {
+        adapter.getFileEntities().add(fileEntityEvent.getPosition(), fileEntityEvent.getFileEntity());
+        adapter.notifyItemInserted(0);
     }
 }

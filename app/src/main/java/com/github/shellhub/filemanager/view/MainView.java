@@ -21,4 +21,6 @@ public interface MainView {
     void hideCreateButton();
 
     void showCreateButton();
+
+    void addFileAt(int position, FileEntity fileEntity);
 }

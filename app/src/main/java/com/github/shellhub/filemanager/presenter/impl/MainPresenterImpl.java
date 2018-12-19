@@ -46,6 +46,16 @@ public class MainPresenterImpl implements MainPresenter, MainModel.Callback{
     }
 
     @Override
+    public void createFolder(String name) {
+        mainModel.createFolder(name, this);
+    }
+
+    @Override
+    public void createFile(String name) {
+        mainModel.createFile(name, this);
+    }
+
+    @Override
     public void onLoadFiles(List<FileEntity> fileEntities) {
         mainView.showFiles(fileEntities);
     }
@@ -68,5 +78,15 @@ public class MainPresenterImpl implements MainPresenter, MainModel.Callback{
     @Override
     public void onDeleted(int position) {
         mainView.delete(position);
+    }
+
+    @Override
+    public void onFolderCreated(FileEntity fileEntity) {
+        mainView.addFileAt(0, fileEntity);
+    }
+
+    @Override
+    public void onFileCreated(FileEntity fileEntity) {
+
     }
 }

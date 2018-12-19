@@ -11,4 +11,8 @@ public interface MainPresenter {
     void handleFileAction(FileActionEvent fileActionEvent);
 
     void handleScrollEvent(ScrollEvent event);
+
+    void createFolder(String name);
+
+    void createFile(String name);
 }

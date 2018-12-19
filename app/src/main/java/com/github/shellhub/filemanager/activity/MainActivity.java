@@ -5,11 +5,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.github.shellhub.filemanager.R;
 import com.github.shellhub.filemanager.entity.FileEntity;
 import com.github.shellhub.filemanager.entity.FileRemoveEvent;
@@ -22,8 +26,8 @@ import com.github.shellhub.filemanager.event.RenameEvent;
 import com.github.shellhub.filemanager.fragment.HomeFragment;
 import com.github.shellhub.filemanager.presenter.MainPresenter;
 import com.github.shellhub.filemanager.presenter.impl.MainPresenterImpl;
+import com.github.shellhub.filemanager.utils.AppUtils;
 import com.github.shellhub.filemanager.view.MainView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -42,6 +46,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -56,8 +61,15 @@ public class MainActivity extends BaseActivity
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
+    @BindView(R.id.fab_action_menu)
+    FloatingActionsMenu fabActionMenu;
+
+    @BindView(R.id.fab_create_folder_action)
+    FloatingActionButton fabCreateFolderAction;
+
+    @BindView(R.id.fab_create_file_action)
+    FloatingActionButton fabCreateFileAction;
+
 
     @BindView(R.id.nav_view)
     NavigationView navigationView;
@@ -132,6 +144,37 @@ public class MainActivity extends BaseActivity
         return true;
     }
 
+    @OnClick({R.id.fab_create_folder_action, R.id.fab_create_file_action})
+    public void onClick(View view) {
+        String title = "";
+        switch (view.getId()) {
+            case R.id.fab_create_folder_action:
+                title = getResources().getString(R.string.new_folder);
+                break;
+            case R.id.fab_create_file_action:
+                title = getResources().getString(R.string.new_file);
+                break;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        input.setText("");
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton(AppUtils.getApp().getResources().getString(R.string.ok),
+                (dialog, which) -> {
+                    mainPresenter.createFolder(input.getText().toString());
+                }).setNegativeButton(AppUtils.getApp().getResources().getString(R.string.cancel),
+                (dialog, which) -> dialog.cancel()).show();
+
+
+        fabActionMenu.collapse();
+    }
+
     @Override
     public void showFiles(List<FileEntity> fileEntities) {
         EventBus.getDefault().post(new FileEntitiesEvent(fileEntities));
@@ -169,12 +212,17 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void hideCreateButton() {
-        fab.setVisibility(View.GONE);
+        fabActionMenu.setVisibility(View.GONE);
     }
 
     @Override
     public void showCreateButton() {
-        fab.setVisibility(View.VISIBLE);
+        fabActionMenu.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void addFileAt(int position, FileEntity fileEntity) {
+        EventBus.getDefault().post(new FileEntityEvent(fileEntity, position));;
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)

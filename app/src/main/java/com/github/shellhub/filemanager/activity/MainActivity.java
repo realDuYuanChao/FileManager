@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.github.shellhub.filemanager.R;
 import com.github.shellhub.filemanager.entity.FileEntity;
 import com.github.shellhub.filemanager.entity.FileRemoveEvent;
+import com.github.shellhub.filemanager.entity.ScrollEvent;
 import com.github.shellhub.filemanager.event.FileActionEvent;
 import com.github.shellhub.filemanager.event.FileEntitiesEvent;
 import com.github.shellhub.filemanager.event.FileEntityEvent;
@@ -151,6 +153,16 @@ public class MainActivity extends BaseActivity
         EventBus.getDefault().post(new FileRemoveEvent(position));
     }
 
+    @Override
+    public void hideCreateButton() {
+        fab.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showCreateButton() {
+        fab.setVisibility(View.VISIBLE);
+    }
+
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     void permissionRequest() {
 
@@ -201,6 +213,11 @@ public class MainActivity extends BaseActivity
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onFileActionEvent(FileActionEvent fileActionEvent) {
         mainPresenter.handleFileAction(fileActionEvent);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onScrollEvent(ScrollEvent event) {
+        mainPresenter.handleScrollEvent(event);
     }
 
 }

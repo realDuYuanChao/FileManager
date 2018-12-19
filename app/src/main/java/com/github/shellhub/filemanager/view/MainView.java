@@ -17,4 +17,8 @@ public interface MainView {
     void playAudio(String audioPath);
 
     void delete(int position);
+
+    void hideCreateButton();
+
+    void showCreateButton();
 }

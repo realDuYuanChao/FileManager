@@ -1,5 +1,6 @@
 package com.github.shellhub.filemanager.presenter;
 
+import com.github.shellhub.filemanager.entity.ScrollEvent;
 import com.github.shellhub.filemanager.event.FileActionEvent;
 
 public interface MainPresenter {
@@ -8,4 +9,6 @@ public interface MainPresenter {
     void loadParent();
 
     void handleFileAction(FileActionEvent fileActionEvent);
+
+    void handleScrollEvent(ScrollEvent event);
 }

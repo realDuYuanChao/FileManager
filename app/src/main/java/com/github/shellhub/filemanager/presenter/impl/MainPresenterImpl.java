@@ -1,6 +1,7 @@
 package com.github.shellhub.filemanager.presenter.impl;
 
 import com.github.shellhub.filemanager.entity.FileEntity;
+import com.github.shellhub.filemanager.entity.ScrollEvent;
 import com.github.shellhub.filemanager.event.FileActionEvent;
 import com.github.shellhub.filemanager.event.RenameEvent;
 import com.github.shellhub.filemanager.model.MainModel;
@@ -33,6 +34,15 @@ public class MainPresenterImpl implements MainPresenter, MainModel.Callback{
     @Override
     public void handleFileAction(FileActionEvent fileActionEvent) {
         mainModel.handleFileAction(fileActionEvent, this);
+    }
+
+    @Override
+    public void handleScrollEvent(ScrollEvent event) {
+        if (event.getDy() > 0) {
+            mainView.hideCreateButton();
+        } else if (event.getDy() < 0) {
+            mainView.showCreateButton();
+        }
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import com.github.shellhub.filemanager.R;
 import com.github.shellhub.filemanager.adapter.HomeAdapter;
 import com.github.shellhub.filemanager.entity.FileRemoveEvent;
+import com.github.shellhub.filemanager.entity.ScrollEvent;
 import com.github.shellhub.filemanager.event.FileEntitiesEvent;
 import com.github.shellhub.filemanager.event.RenameEvent;
 
@@ -41,10 +42,18 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    private void setup(){
+    private void setup() {
         rvMain.setAdapter(adapter = new HomeAdapter());
         rvMain.setLayoutManager(new LinearLayoutManager(getContext()));
         rvMain.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+
+        rvMain.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                EventBus.getDefault().post(new ScrollEvent(dy));
+            }
+        });
     }
 
     @Override

@@ -26,4 +26,11 @@
     <string name="open">Open</string>
     <string name="properties">Properties</string>
     <string name="delete_dialog_title">Are you sure delete?</string>
+    <string name="file_properties">File Properties</string>
+    <string name="name_label">Name:</string>
+    <string name="location_label">Location:</string>
+    <string name="type_label">Type:</string>
+    <string name="file_size_label">File Size:</string>
+    <string name="modified_date_label">Modified Date:</string>
+    <string name="folder">Folder</string>
 </resources>

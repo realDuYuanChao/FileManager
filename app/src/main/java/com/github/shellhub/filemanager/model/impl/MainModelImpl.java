@@ -62,14 +62,22 @@ public class MainModelImpl implements MainModel {
                 fileEntity.setPath(files[i].getPath());
                 fileEntity.setFileType(FileUtils.getFileType(files[i]));
 
+                //init modified time
+                fileEntity.setLastMidify(files[i].lastModified());
+                fileEntity.setFormatLastModify(new SimpleDateFormat("MM/d/YY,hh:mm a", Locale.ENGLISH)
+                        .format(new Date(fileEntity.getLastMidify())));
+
+                //init size
+                fileEntity.setSize(files[i].length());
+                fileEntity.setFormatSize(FileUtils.formatFileSize(fileEntity.getSize()));
+
+                //init extension
+                fileEntity.setFormat(FileUtils.getExtension(fileEntity.getName()));
+
                 FileType fileType = FileUtils.getFileType(files[i]);
                 if (fileType == FileType.TYPE_FOLDER) {
+                    fileEntity.setFormat(AppUtils.getApp().getResources().getString(R.string.folder));
                     fileEntity.setSubCount(files[i].listFiles().length);
-                    fileEntity.setLastMidify(files[i].lastModified());
-
-                    fileEntity.setFormatLastModify(new SimpleDateFormat("MM/d/YY,hh:mm a", Locale.ENGLISH)
-                            .format(new Date(fileEntity.getLastMidify())));
-
                     int subCount = files[i].listFiles().length;
                     String subCountTitle;
                     if (files[i].listFiles().length > 1) {
@@ -87,17 +95,10 @@ public class MainModelImpl implements MainModel {
                     fileEntity.setEmbeddedPicture(mmr.getEmbeddedPicture());
                     fileEntity.setAlbumName(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM));
                     fileEntity.setDuration(TimeUtils.formatDuration(Integer.valueOf(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))));
-                } else if (fileType == FileType.TYPE_PDF) {
-                    //todo
-                } else if (fileType == FileType.TYPE_IMAGE) {
-                    //todo
-                } else if (fileType == FileType.TYPE_TEXT) {
-                    fileEntity.setLastMidify(files[i].lastModified());
 
-                    fileEntity.setFormatLastModify(new SimpleDateFormat("MM/d/YY,hh:mm a", Locale.ENGLISH)
-                            .format(new Date(fileEntity.getLastMidify())));
-                    fileEntity.setSize(files[i].length());
-                    fileEntity.setFormatSize(FileUtils.formatFileSize(fileEntity.getSize()));
+                } else if (fileType == FileType.TYPE_PDF) {
+                } else if (fileType == FileType.TYPE_IMAGE) {
+                } else if (fileType == FileType.TYPE_TEXT) {
                 }
                 emitter.onNext(fileEntity);
             }

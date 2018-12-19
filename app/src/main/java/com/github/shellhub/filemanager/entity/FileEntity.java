@@ -26,4 +26,5 @@ public class FileEntity {
     private String albumName;
     private String formatLastModify;
     private String subCountTitle;
+    private String format;
 }

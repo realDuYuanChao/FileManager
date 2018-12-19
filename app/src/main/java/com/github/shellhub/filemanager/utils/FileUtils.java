@@ -54,4 +54,13 @@ public class FileUtils {
 
         return hrSize;
     }
+
+    public static String getExtension(String filename) {
+        String extension = "";
+        int i = filename.lastIndexOf('.');
+        if (i > 0) {
+            extension = filename.substring(i+1);
+        }
+        return extension;
+    }
 }

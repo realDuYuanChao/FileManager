@@ -318,7 +318,24 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         fileActionEvent.setFileAction(FileAction.ACTION_CUT);
                         break;
                     case R.id.properties:
-                        //TODO
+                        View propertiesView = LayoutInflater.from(mContext).inflate(R.layout.layout_file_properties, null);
+
+                        TextView tvNameContent = propertiesView.findViewById(R.id.tv_name_content);
+                        TextView tvLocationContent = propertiesView.findViewById(R.id.tv_location_content);
+                        TextView tvFileSizeContent = propertiesView.findViewById(R.id.tv_file_size_content);
+                        TextView tvTypeContent = propertiesView.findViewById(R.id.tv_type_content);
+                        TextView tvModifiedContent = propertiesView.findViewById(R.id.tv_modified_date_content);
+
+                        tvNameContent.setText(fileEntity.getName());
+                        tvLocationContent.setText(fileEntity.getPath());
+                        tvFileSizeContent.setText(fileEntity.getFormatSize());
+                        tvTypeContent.setText(fileEntity.getFormat());
+                        tvModifiedContent.setText(fileEntity.getFormatLastModify());
+
+                        alertDialog = new AlertDialog.Builder(mContext)
+                                .setView(propertiesView)
+                                .setPositiveButton(R.string.ok, null);
+                        alertDialog.create().show();
                         break;
                     default:
                         break;

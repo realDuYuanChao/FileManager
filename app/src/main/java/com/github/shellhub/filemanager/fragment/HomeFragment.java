@@ -1,6 +1,7 @@
 package com.github.shellhub.filemanager.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,6 +77,8 @@ public class HomeFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onFileRemoveEvent(FileRemoveEvent fileRemoveEvent) {
-        adapter.notifyItemRemoved(fileRemoveEvent.getPosition());
+        int removePosition = fileRemoveEvent.getPosition();
+        adapter.getFileEntities().remove(removePosition);
+        adapter.notifyItemRemoved(removePosition);
     }
 }

@@ -44,6 +44,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final int TYPE_FOLDER = 0;
     private final int TYPE_AUDIO = 1;
     private final int TYPE_IMAGE = 2;
+    private final int TYPE_TXT = 3;
 
     @NonNull
     @Override
@@ -59,9 +60,17 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 view = LayoutInflater.from(mContext).inflate(R.layout.nav_home_audio_item, parent, false);
                 ButterKnife.bind(this, view);
                 return new HomeAudioViewHolder(view);
+            case TYPE_IMAGE:
+                //TODO
+                break;
+            case TYPE_TXT:
+                view = LayoutInflater.from(mContext).inflate(R.layout.nav_home_txt_item, parent, false);
+                ButterKnife.bind(this, view);
+                return new HomeTXTViewHolder(view);
             default:
                 return null;
         }
+        return null;
     }
 
     @Override
@@ -70,15 +79,22 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((HomeFolderViewHolder) holder).bind(position);
         } else if (holder instanceof HomeAudioViewHolder) {
             ((HomeAudioViewHolder) holder).bind(position);
+        } else if (holder instanceof HomeTXTViewHolder) {
+            ((HomeTXTViewHolder) holder).bind(position);
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (fileEntities.get(position).getFileType() == FileType.TYPE_FOLDER) {
+        FileEntity fileEntity = fileEntities.get(position);
+        if (fileEntity.getFileType() == FileType.TYPE_FOLDER) {
             return TYPE_FOLDER;
-        } else {
+        } else if (fileEntity.getFileType() == FileType.TYPE_AUDIO) {
             return TYPE_AUDIO;
+        } else if (fileEntity.getFileType() == FileType.TYPE_TEXT) {
+            return TYPE_TXT;
+        } else {
+            return TYPE_FOLDER;
         }
     }
 
@@ -123,6 +139,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
+
     public class HomeAudioViewHolder extends RecyclerView.ViewHolder {
 
         private String TAG = this.getClass().getSimpleName();
@@ -153,6 +170,41 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             Glide.with(mContext).load(fileEntity.getEmbeddedPicture()).into(ivAudioAlbumCover);
             tvHomeAudioDuration.setText(fileEntity.getDuration());
             showPopMenu(ivHomeAudioMoreMenu, fileEntity, position);
+            itemView.setOnClickListener((view) -> {
+                EventBus.getDefault().post(new FileActionEvent(fileEntity, FileAction.ACTION_OPEN, position));
+            });
+        }
+    }
+
+    public class HomeTXTViewHolder extends RecyclerView.ViewHolder {
+        private String TAG = this.getClass().getSimpleName();
+        @BindView(R.id.tv_home_txt_name)
+        TextView tvHomeTXTName;
+
+        @BindView(R.id.tv_home_txt_size)
+        TextView tvHomeTXTSize;
+
+        @BindView(R.id.tv_txt_last_modify_time)
+        TextView tvTXTLastModifyTime;
+
+
+        @BindView(R.id.iv_home_txt_more_menu)
+        ImageView ivHomeTXTMoreMenu;
+
+        @BindView(R.id.iv_home_txt_icon)
+        ImageView ivHomeTXTIcon;
+
+        public HomeTXTViewHolder(@NonNull View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+
+        public void bind(int position) {
+            FileEntity fileEntity = fileEntities.get(position);
+            tvHomeTXTName.setText(fileEntity.getName());
+            tvTXTLastModifyTime.setText(fileEntity.getFormatLastModify());
+            tvHomeTXTSize.setText(fileEntity.getFormatSize());
+            showPopMenu(ivHomeTXTMoreMenu, fileEntity, position);
             itemView.setOnClickListener((view) -> {
                 EventBus.getDefault().post(new FileActionEvent(fileEntity, FileAction.ACTION_OPEN, position));
             });

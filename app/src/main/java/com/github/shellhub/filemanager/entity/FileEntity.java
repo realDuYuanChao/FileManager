@@ -15,6 +15,7 @@ public class FileEntity {
     private String path;
     private String newPath;
     private long size; /*in bits*/
+    private String formatSize;
     private Drawable drawableIcon;
     private int resIcon;
     private FileType fileType;

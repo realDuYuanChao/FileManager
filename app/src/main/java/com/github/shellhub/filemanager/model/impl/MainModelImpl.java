@@ -91,6 +91,13 @@ public class MainModelImpl implements MainModel {
                     //todo
                 } else if (fileType == FileType.TYPE_IMAGE) {
                     //todo
+                } else if (fileType == FileType.TYPE_TEXT) {
+                    fileEntity.setLastMidify(files[i].lastModified());
+
+                    fileEntity.setFormatLastModify(new SimpleDateFormat("MM/d/YY,hh:mm a", Locale.ENGLISH)
+                            .format(new Date(fileEntity.getLastMidify())));
+                    fileEntity.setSize(files[i].length());
+                    fileEntity.setFormatSize(FileUtils.formatFileSize(fileEntity.getSize()));
                 }
                 emitter.onNext(fileEntity);
             }
@@ -194,17 +201,21 @@ public class MainModelImpl implements MainModel {
         List<FileEntity> result = new ArrayList<>();
         List<FileEntity> folderEntities = new ArrayList<>();
         List<FileEntity> audioEntities = new ArrayList<>();
+        List<FileEntity> txtEntities = new ArrayList<>();
 
         for (FileEntity fileEntity : fileEntities) {
             if (fileEntity.getFileType() == FileType.TYPE_FOLDER) {
                 folderEntities.add(fileEntity);
             } else if (fileEntity.getFileType() == FileType.TYPE_AUDIO) {
                 audioEntities.add(fileEntity);
+            } else if (fileEntity.getFileType() == FileType.TYPE_TEXT) {
+                txtEntities.add(fileEntity);
             }
         }
 
         result.addAll(folderEntities);
         result.addAll(audioEntities);
+        result.addAll(txtEntities);
         return result;
     }
 }

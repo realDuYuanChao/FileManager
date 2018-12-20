@@ -44,7 +44,6 @@ public class MainModelImpl implements MainModel {
 
         if (shouldPush) {
             pathStack.add(rootPath);
-            shouldPush = true;
         }
 
         Log.d(TAG, "loadFiles: " + pathStack);

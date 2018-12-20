@@ -1,5 +1,9 @@
 package com.github.shellhub.filemanager.utils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class TimeUtils {
     public static String formatDuration(long duration) {
         long hours = duration / ConstantUtils.ONE_HOUR;
@@ -29,5 +33,10 @@ public class TimeUtils {
             builder.append(seconds);
         }
         return builder.toString();
+    }
+
+    public static String formatDate (long time){
+        return new SimpleDateFormat("MM/d/YY,hh:mm a", Locale.ENGLISH)
+                .format(new Date(time));
     }
 }

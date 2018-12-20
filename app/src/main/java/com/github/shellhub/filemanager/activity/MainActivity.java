@@ -16,6 +16,7 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.github.shellhub.filemanager.R;
 import com.github.shellhub.filemanager.entity.FileEntity;
+import com.github.shellhub.filemanager.entity.FileInsertEvent;
 import com.github.shellhub.filemanager.entity.FileRemoveEvent;
 import com.github.shellhub.filemanager.entity.ScrollEvent;
 import com.github.shellhub.filemanager.entity.ShowModeEvent;
@@ -222,7 +223,7 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void addFileAt(int position, FileEntity fileEntity) {
-        EventBus.getDefault().post(new FileEntityEvent(fileEntity, position));;
+        EventBus.getDefault().post(new FileInsertEvent(position, fileEntity));
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)

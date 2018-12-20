@@ -14,11 +14,8 @@ import com.github.shellhub.filemanager.utils.FileUtils;
 import com.github.shellhub.filemanager.utils.TimeUtils;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Stack;
 
 import io.reactivex.Observable;
@@ -64,8 +61,7 @@ public class MainModelImpl implements MainModel {
 
                 //init modified time
                 fileEntity.setLastMidify(files[i].lastModified());
-                fileEntity.setFormatLastModify(new SimpleDateFormat("MM/d/YY,hh:mm a", Locale.ENGLISH)
-                        .format(new Date(fileEntity.getLastMidify())));
+                fileEntity.setFormatLastModify(TimeUtils.formatDate(fileEntity.getLastMidify()));
 
                 //init size
                 fileEntity.setSize(files[i].length());
@@ -205,11 +201,13 @@ public class MainModelImpl implements MainModel {
         if (created) {
             FileEntity fileEntity = new FileEntity();
             fileEntity.setSize(newFile.length());
+            fileEntity.setFormatSize(FileUtils.formatFileSize(fileEntity.getSize()));
             fileEntity.setPath(newFile.getPath());
             fileEntity.setName(newFile.getName());
             fileEntity.setLastMidify(newFile.lastModified());
-            //todo
-
+            fileEntity.setFormatLastModify(TimeUtils.formatDate(fileEntity.getLastMidify()));
+            fileEntity.setSubCount(0);
+            fileEntity.setSubCountTitle("(" + fileEntity.getSubCount() + " " + AppUtils.getApp().getResources().getString(R.string.item) + ")");//e.g(1 item));
             callback.onFolderCreated(fileEntity);
         }
     }
